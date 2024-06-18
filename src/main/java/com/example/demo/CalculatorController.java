@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+//https://api.punkapi.com/v2/beers?abv_gt=3&abv_lt=5&ibu_gt=0
 
 @Controller
 public class CalculatorController {
