@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.calculator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -6,15 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-//https://api.punkapi.com/v2/beers?abv_gt=3&abv_lt=5&ibu_gt=0
-
 @Controller
 public class CalculatorController {
 
     @Autowired
     private CalculatorService calculatorService;
-
-    private String[] heroes = {"Batman", "Superman", "Spiderman"};
 
     @GetMapping("/calculator")
     public String getMethodName(
@@ -26,7 +22,8 @@ public class CalculatorController {
             view.addAttribute("num2", param2);
             float result = this.calculatorService.calculate(param1, param2, operation);
             view.addAttribute("result", result);
-            view.addAttribute("heroes", heroes);
+            this.calculatorService.addOperation(param1 , param2, operation, result);
+            view.addAttribute("operations", this.calculatorService.getPreviousOperations());
             switch (operation) {
                 case "add":
                     view.addAttribute("operation", "+");

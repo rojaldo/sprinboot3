@@ -22,8 +22,8 @@
                 <div class="card-body">
                     <h4 class="card-title" th:text="${num1} + ' ' + ${operation} + ' ' + ${num2} + ' = ' + ${result}">Title</h4>
                 </div>
-                <ul class="list-group list-group-numbered mt-3">
-                    <li class="list-group-item" th:each="hero:${heroes}" th:text="${hero}"/>
+                <ul class="list-group mt-3">
+                    <li class="list-group-item" th:each="operation:${operations}" th:text="${operation}"/>
                 </ul>
                 
             </div>
