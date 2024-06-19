@@ -1,7 +1,9 @@
 package com.example.demo.rest.user;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,52 +12,82 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserService {
 
-    private ArrayList<User> users = new ArrayList<User>();
+    @Autowired
+    private UserRepository userRepository;
 
-    public boolean addUser(User user){
-        // check if user already exists
-        for (User u : this.users) {
-            if (u.email.equalsIgnoreCase(user.email)) {
-                return false;
-            }
+    // private ArrayList<User> users = new ArrayList<User>();
+
+    public boolean addUser(UserDto user){
+        // check if email already exists
+        List<UserEntity> userEntity = this.userRepository.findByEmail(user.email);
+        if (userEntity.size() > 0) {
+            log.info("User already exists");
+            return false;
         }
-        this.users.add(user);
+        UserEntity userEntity2 = new UserEntity(user.name, user.email, user.password);
+        this.userRepository.save(userEntity2);
         return true;
     }
 
-    public ArrayList<User> getUsers(){
-        return this.users;
+    public List<UserDto> getUsers(){
+        List<UserEntity> userEntities = this.userRepository.findAll();
+        List<UserDto> users = new ArrayList<UserDto>();
+        for (UserEntity userEntity : userEntities) {
+            users.add(new UserDto(userEntity.getName(), userEntity.getEmail(), userEntity.getPassword()));
+        }
+        return users;
     }
 
-    public void removeUser(int index){
-        this.users.remove(index);
+    public UserDto getUserById(long id){
+        UserEntity userEntity = this.userRepository.findById(id).get();
+        return new UserDto(userEntity.getName(), userEntity.getEmail(), userEntity.getPassword());
     }
 
-    public void removeUser(User user){
-        this.users.remove(user);
+    public void removeUserById(long id){
+        this.userRepository.deleteById(id);
+    }
+
+    public void removeUser(UserDto user){
+        // find user by email
     }
 
     // return user by name
-    public User getUser(String name){
-        for (User user : this.users) {
-            // not case sensitive
-            if (user.name.equalsIgnoreCase(name)) {
-                return user;
-            }
+    public UserDto getUserByName(String name){
+        // find user by name
+        List<UserEntity> userEntities = this.userRepository.findByName(name);
+        if (userEntities.size() > 0) {
+            UserEntity userEntity = userEntities.get(0);
+            return new UserDto(userEntity.getName(), userEntity.getEmail(), userEntity.getPassword());
         }
         return null;
     }
 
-    public boolean updateUser(User user){
-        for (User u : this.users) {
-            if (u.name.equalsIgnoreCase(user.name)) {
-                log.info( "User found: " + u.name);
-                log.info( "User info: " + user.email + " " + user.password);
-                u.email = user.email;
-                u.password = user.password;
-                log.info( "User info: " + u.email + " " + u.password);
-                return true;
+    public boolean updateUserById(long id, UserDto user){
+        UserEntity userEntity = this.userRepository.findById(id).get();
+        if (userEntity != null) {
+            userEntity.setName(user.name); // userEntity.setName(user.getName()
+            userEntity.setEmail(user.email);
+            userEntity.setPassword(user.password);
+            this.userRepository.save(userEntity);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean patchUserById(long id, UserDto user){
+        UserEntity userEntity = this.userRepository.findById(id).get();
+        if (userEntity != null) {
+            if (user.name != null) {
+                userEntity.setName(user.name);
             }
+            if (user.email != null) {
+                userEntity.setEmail(user.email);
+            }
+            if (user.password != null) {
+                userEntity.setPassword(user.password);
+            }
+            this.userRepository.save(userEntity);
+            return true;
         }
         return false;
     }
