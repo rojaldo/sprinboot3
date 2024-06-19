@@ -25,7 +25,7 @@ public class CalculatorRestController {
     @Autowired
     private CalculatorService calculatorService;
     
-    @PutMapping("evaluate")
+    @PutMapping("calculator")
     public ResponseEntity<Map<String,String>> putMethodName(@RequestBody @Valid CalculatorDto calculatorDto) {
         
         float result = this.calculatorService.calculate(calculatorDto.num1, calculatorDto.num2, calculatorDto.operation);
