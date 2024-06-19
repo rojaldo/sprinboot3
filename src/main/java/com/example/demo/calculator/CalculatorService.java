@@ -9,7 +9,7 @@ public class CalculatorService {
 
     private ArrayList<String> previousOperations = new ArrayList<String>();
     
-    float calculate(float num1, float num2, String operation){
+    public float calculate(float num1, float num2, String operation){
         switch (operation) {
             case "add":
                 return num1 + num2;
@@ -18,6 +18,14 @@ public class CalculatorService {
             case "multiply":
                 return num1 * num2;
             case "divide":
+                return num1 / num2;
+            case "+":
+                return num1 + num2;
+            case "-":
+                return num1 - num2;
+            case "*":
+                return num1 * num2;
+            case "/":
                 return num1 / num2;
             default:
                 return num1 + num2;

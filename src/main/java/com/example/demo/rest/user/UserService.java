@@ -24,7 +24,8 @@ public class UserService {
             log.info("User already exists");
             return false;
         }
-        UserEntity userEntity2 = new UserEntity(user.name, user.email, user.password);
+        UserEntity userEntity2 = UserEntity.builder().name(user.name).email(user.email).password(user.password).build();
+
         this.userRepository.save(userEntity2);
         return true;
     }
