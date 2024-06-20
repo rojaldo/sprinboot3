@@ -24,7 +24,7 @@ public class ExceptionHandlerController {
     @ResponseStatus(org.springframework.http.HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Map<String, String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return Map.of ("message", e.getMessage());
+        return Map.of ("message for IllegalArgumentException:", e.getMessage());
     }
 
     @ExceptionHandler(InternalServerError.class)
