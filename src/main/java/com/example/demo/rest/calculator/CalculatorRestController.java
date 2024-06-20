@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.calculator.CalculatorService;
 
+import jakarta.el.Expression;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
+import org.aspectj.weaver.ast.Instanceof;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +32,26 @@ public class CalculatorRestController {
     private CalculatorRestService calculatorService;
     
     @PutMapping("calculator")
-    public ResponseEntity<IOprationResponse> putMethodName(@RequestBody @Valid CalculatorDto calculatorDto) {
-        
-        OperationDto res = this.calculatorService.calculate(calculatorDto.num1, calculatorDto.num2, calculatorDto.operation);
-        if(res == null){
-            return ResponseEntity.badRequest().body(new OperationError( "operation must be +, -, *, /"));
+    public ResponseEntity<IOprationResponse> putMethodName(@RequestBody Map<String, Object> request) {
+        OperationDto res = new OperationDto();
+        // check calculatorDto is CalculatorDto Object
+        // get expression field from request
+        String expression = (String) request.get("expression");
+        if (expression != null) {
+            // call process method
+            res = this.calculatorService.process(expression);
+            // return operation=result
+            return ResponseEntity.ok(res);
+        }else {
+            // get num1, num2, operation fields from request
+            double num1 = (double) request.get("num_1");
+            double num2 = (double) request.get("num_2");
+            String operation = (String) request.get("operator");
+            // call calculate method
+            res = this.calculatorService.calculate( (float) num1, (float) num2, operation);
+            // return operation=result
+            return ResponseEntity.ok(res);
         }
-        // return operation=result
-        return ResponseEntity.ok(res);
     }
 
     @GetMapping("operations")
