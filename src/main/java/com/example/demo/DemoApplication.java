@@ -4,9 +4,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestTemplate;
 
-import com.example.demo.rest.user.UserDto;
-import com.example.demo.rest.user.UserService;
+import com.example.demo.rest.beers.beers.BeerDto;
+import com.example.demo.rest.beers.beers.BeersService;
+
 
 @SpringBootApplication
 public class DemoApplication {
@@ -15,12 +18,18 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	// @Bean
-	// public CommandLineRunner commandLineRunner(UserService userService) {
-	// 	return args -> {
-	// 		userService.addUser(new UserDto("John", "john@email.com", "123"));
-	// 		userService.addUser(new UserDto("Jane", "jane@email.com", "1234"));
-	// 	};
-	// }
+	// Get beers from API and save them to database
+	@Bean
+	public CommandLineRunner addBeers(BeersService beersService) {
+		return (args) -> {
+			BeerDto[] beers = beersService.getBeersFromScratch();
+			
+		};
+	}
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
 
 }

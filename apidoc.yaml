@@ -1,0 +1,239 @@
+openapi: '3.0.2'
+info:
+  title: API Title
+  version: '1.0'
+servers:
+  - url: https://localhost:8080/api/v1
+    description: Localhost server
+tags:
+  - name: beers
+    description: Beers
+  - name: books
+    description: Books
+paths:
+  /beers:
+    get:
+      description: Get beers
+      operationId: getBeers
+      tags:
+        - "beers"
+      parameters: 
+        - name: name
+          in: query
+          description: Beer name
+          required: false
+          schema:
+            type: string
+        - name: abv_gte
+          in: query
+          description: ABV greater than or equal to
+          required: false
+          schema:
+            type: number
+        - name: abv_lte
+          in: query
+          description: ABV less than or equal to
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BeerResponse'
+  /books:
+    get:
+      description: Get books
+      operationId: getBooks
+      tags:
+        - "books"
+      parameters: 
+        - name: name
+          in: query
+          description: Book name
+          required: false
+          schema:
+            type: string
+        - name: author
+          in: query
+          description: Book author
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error400'
+    post:
+      description: Create book
+      operationId: createBook
+      tags:
+        - "books"
+      requestBody:
+        description: Book object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+  /books/{id}:
+    put:
+      description: Update book
+      operationId: updateBook
+      tags:
+        - "books"
+      parameters:
+        - name: id
+          in: path
+          description: Book id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Book object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error404'
+    delete:
+      description: Delete book
+      operationId: deleteBook
+      tags:
+        - "books"
+      parameters:
+        - name: id
+          in: path
+          description: Book id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error404'
+
+# objects
+components:
+  schemas:
+    BeerResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        tagline:
+          type: string
+        first_brewed:
+          type: string
+        description:
+          type: string
+        image_url:
+          type: string
+        abv:
+          type: number
+        ibu:
+          type: number
+        ebc:
+          type: number
+    BookRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        description:
+          type: string
+    BookResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        description:
+          type: string
+    Error400:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad Request
+        code:
+          type: number
+          example: 400
+    Error404:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Not Found
+        code:
+          type: number
+          example: 404
+        
+    
+
